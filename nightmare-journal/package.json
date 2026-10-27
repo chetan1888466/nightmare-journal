@@ -1,0 +1,12 @@
+{
+  "name": "nightmare-journal",
+  "version": "1.0.0",
+  "description": "Simple Nightmare Journal that transforms dreams into gentle stories using local Ollama model gemma4:e2b",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["nightmare", "journal", "ollama", "gemma", "gentle-story"],
+  "author": "",
+  "license": "ISC"
+}

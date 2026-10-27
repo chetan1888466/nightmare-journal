@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nightmare Journal &bull; Haunted Twilight</title>
+  <!-- Gothic & Creepy Display Fonts with local fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;900&family=Creepster&family=MedievalSharp&family=Nosifer&family=Special+Elite&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="spooky-mode">
+  <!-- Atmospheric Overlays -->
+  <div id="vignette-overlay" class="vignette-overlay" aria-hidden="true"></div>
+  <div id="film-grain" class="film-grain-overlay" aria-hidden="true"></div>
+  <div id="flashlight-layer" class="flashlight-layer hidden" aria-hidden="true"></div>
+  <canvas id="fog-canvas" class="fog-canvas" aria-hidden="true"></canvas>
+
+  <!-- Corner Cobwebs (Detailed SVG) -->
+  <svg class="corner-cobweb top-left" viewBox="0 0 160 160" aria-hidden="true">
+    <path d="M0,0 L160,0 M0,0 L140,50 M0,0 L110,110 M0,0 L50,140 M0,0 L0,160" stroke="rgba(255,255,255,0.25)" stroke-width="1.2" fill="none" />
+    <path d="M30,0 Q30,30 0,30 M60,0 Q60,60 0,60 M90,0 Q90,90 0,90 M120,0 Q120,120 0,120 M150,0 Q150,150 0,150" stroke="rgba(255,255,255,0.22)" stroke-width="1" fill="none" />
+    <circle cx="95" cy="45" r="2" fill="rgba(255,255,255,0.4)" />
+  </svg>
+  <svg class="corner-cobweb top-right" viewBox="0 0 160 160" aria-hidden="true">
+    <path d="M160,0 L0,0 M160,0 L20,50 M160,0 L50,110 M160,0 L110,140 M160,0 L160,160" stroke="rgba(255,255,255,0.25)" stroke-width="1.2" fill="none" />
+    <path d="M130,0 Q130,30 160,30 M100,0 Q100,60 160,60 M70,0 Q70,90 160,90 M40,0 Q40,120 160,120 M10,0 Q10,150 160,150" stroke="rgba(255,255,255,0.22)" stroke-width="1" fill="none" />
+  </svg>
+
+  <!-- Floating Creatures & Spooks -->
+  <div id="ghosts-container" class="ghosts-container" aria-hidden="true"></div>
+  <div id="bats-container" class="bats-container" aria-hidden="true"></div>
+  <div id="spiders-container" class="spiders-container" aria-hidden="true"></div>
+
+  <!-- Shadowy Peripheral Figure (disappears when cursor moves toward it) -->
+  <div id="shadow-figure" class="shadow-figure hidden" aria-hidden="true">
+    <div class="shadow-silhouette"></div>
+  </div>
+
+  <!-- Glowing Eyes in Dark Corner (tracks mouse cursor) -->
+  <div class="corner-creepy-eyes" id="creepy-eyes-corner" aria-hidden="true">
+    <div class="creepy-eye eye-left" id="eye-left"><div class="pupil" id="pupil-left"></div><div class="eyelid"></div></div>
+    <div class="creepy-eye eye-right" id="eye-right"><div class="pupil" id="pupil-right"></div><div class="eyelid"></div></div>
+  </div>
+
+  <!-- Subtle Jump-Scare Overlay (quick flash under 0.3s) -->
+  <div id="jumpscare-overlay" class="jumpscare-overlay hidden" aria-hidden="true">
+    <div class="jumpscare-face"></div>
+  </div>
+
+  <div class="app-container">
+    <!-- Halloween Ambience & Audio Control Bar -->
+    <div class="halloween-control-bar">
+      <button id="enter-nightmare-btn" class="btn-spooky-banner" type="button" title="Awaken ambient sounds and deeper darkness">
+        <span class="pulse-skull">🩸</span>
+        <span id="nightmare-btn-text">Enter the Nightmare</span>
+      </button>
+      <div class="spooky-toggles">
+        <button id="toggle-sound-btn" class="spooky-ctrl-btn" type="button" title="Mute or unmute ambient audio">
+          <span id="sound-icon">🔇</span>
+          <span id="sound-label">Audio: Muted</span>
+        </button>
+        <button id="toggle-flashlight-btn" class="spooky-ctrl-btn" type="button" title="Toggle flashlight cursor illumination">
+          <span id="flashlight-icon">🔦</span>
+          <span id="flashlight-label">Flashlight: Off</span>
+        </button>
+        <button id="toggle-scares-btn" class="spooky-ctrl-btn" type="button" title="Toggle subtle scares">
+          <span id="scares-icon">👻</span>
+          <span id="scares-label">Scares: On</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo-area">
+          <span class="logo-icon jack-o-lantern" title="The Jack-o'-lantern">🎃</span>
+          <div class="title-wrap">
+            <h1 class="creepy-title">
+              <span class="candle-flame">🕯️</span>
+              Nightmare Journal
+              <span class="candle-flame">🕯️</span>
+            </h1>
+            <div class="blood-drips header-drips" aria-hidden="true">
+              <svg viewBox="0 0 500 22" preserveAspectRatio="none">
+                <path d="M0,0 L500,0 L500,3 C460,3 455,16 450,16 C445,16 440,3 390,3 C380,3 375,21 370,21 C365,21 360,3 280,3 C270,3 266,14 262,14 C258,14 254,3 190,3 C180,3 175,19 170,19 C165,19 160,3 110,3 C102,3 98,12 94,12 C90,12 86,3 0,3 Z" fill="#990000" />
+              </svg>
+            </div>
+            <p class="subtitle creepy-subtitle" id="creepy-subtitle">Transform terrifying nightmares into gentle, peaceful stories with local AI</p>
+          </div>
+        </div>
+        <div class="ollama-status-container">
+          <div id="ollama-badge" class="status-badge status-checking">
+            <span class="status-dot"></span>
+            <span id="ollama-status-text">Checking Ollama...</span>
+          </div>
+          <button id="refresh-ollama-btn" class="icon-btn" title="Check Ollama connection">↻</button>
+        </div>
+      </div>
+      <div id="ollama-notice" class="ollama-notice hidden">
+        ⚠️ <strong>Ollama not detected</strong> at <code>http://localhost:11434</code>.
+        Run <code>ollama run gemma4:e2b</code> in your terminal to enable dream transformation.
+      </div>
+    </header>
+
+    <!-- Main Layout -->
+    <main class="main-layout">
+      <!-- Editor Column -->
+      <section class="editor-section">
+        <div class="card dream-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="section-icon">✍️</span>
+              <h2>Your Dream or Nightmare</h2>
+            </div>
+            <div class="card-actions-top">
+              <button id="new-dream-btn" class="btn btn-secondary btn-sm">+ New Entry</button>
+            </div>
+          </div>
+          <div class="blood-drips card-drips" aria-hidden="true">
+            <svg viewBox="0 0 400 14" preserveAspectRatio="none">
+              <path d="M0,0 L400,0 L400,2 C360,2 355,10 350,10 C345,10 340,2 290,2 C280,2 276,13 272,13 C268,13 264,2 200,2 C190,2 185,9 180,9 C175,9 170,2 120,2 C112,2 108,12 104,12 C100,12 96,2 0,2 Z" fill="#7f1d1d" />
+            </svg>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label for="dream-title">Title (Optional)</label>
+              <input type="text" id="dream-title" placeholder="e.g. The Endless Foggy Hallway" maxlength="120" />
+            </div>
+            <div class="form-group flex-1">
+              <label for="dream-date">Date</label>
+              <input type="date" id="dream-date" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="dream-content">Describe the Nightmare</label>
+            <textarea
+              id="dream-content"
+              rows="7"
+              placeholder="What happened in the nightmare? Describe the shadows, the chase, the scary places or fears you experienced..."
+            ></textarea>
+          </div>
+
+          <div class="editor-buttons">
+            <button id="transform-btn" class="btn btn-magic">
+              <span class="btn-icon">✨</span>
+              <span>Turn into Gentle Story</span>
+            </button>
+            <button id="save-dream-btn" class="btn btn-primary">
+              <span class="btn-icon">💾</span>
+              <span>Save Dream</span>
+            </button>
+            <button id="sample-story-btn" class="btn btn-secondary" title="Load Glowing Door story scene sample">
+              <span class="btn-icon">🌲</span>
+              <span>Sample: Glowing Door</span>
+            </button>
+            <button id="clear-btn" class="btn btn-secondary">Clear</button>
+          </div>
+        </div>
+
+        <!-- Gentle Story Result Card -->
+        <div class="card story-card" id="story-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="section-icon">✨</span>
+              <h2>Gentle Story</h2>
+              <span class="badge-model">gemma4:e2b</span>
+            </div>
+            <div class="story-actions-header" id="story-actions-header" style="display: none;">
+              <button id="copy-story-btn" class="btn btn-secondary btn-sm" title="Copy to clipboard">📋 Copy</button>
+              <button id="save-all-btn" class="btn btn-primary btn-sm" title="Save dream & story">💾 Save Story</button>
+            </div>
+          </div>
+          <div class="blood-drips card-drips" aria-hidden="true">
+            <svg viewBox="0 0 400 14" preserveAspectRatio="none">
+              <path d="M0,0 L400,0 L400,2 C370,2 366,11 362,11 C358,11 354,2 290,2 C280,2 276,14 272,14 C268,14 264,2 180,2 C170,2 165,9 160,9 C155,9 150,2 110,2 C102,2 98,12 94,12 C90,12 86,2 0,2 Z" fill="#7f1d1d" />
+            </svg>
+          </div>
+
+          <!-- Loading state -->
+          <div id="story-loading" class="story-loading hidden">
+            <div class="spinner"></div>
+            <p class="loading-title">Weaving comfort into your dream...</p>
+            <p class="loading-subtitle">Asking local model <code>gemma4:e2b</code> at <code>http://localhost:11434</code></p>
+          </div>
+
+          <!-- Error state -->
+          <div id="story-error" class="story-error hidden">
+            <p class="error-msg" id="error-message"></p>
+            <button id="retry-transform-btn" class="btn btn-secondary btn-sm">Try Again</button>
+          </div>
+
+          <!-- Placeholder state -->
+          <div id="story-placeholder" class="story-placeholder">
+            <div class="placeholder-icon">🕊️</div>
+            <p>Write your nightmare above and click <strong>"Turn into Gentle Story"</strong>.</p>
+            <p class="subtext">Your local AI model will reshape the shadows into comfort, peace, and warmth.</p>
+          </div>
+
+          <!-- Generated Story Content & Animated Scene -->
+          <div id="story-output" class="story-output hidden">
+            <!-- Gentle Animated Scene: The Glowing Door -->
+            <div id="gentle-scene-container" class="gentle-scene-container" role="region" aria-label="Animated Gentle Forest Scene">
+              <div class="scene-header-bar">
+                <div class="scene-title-tag">
+                  <span class="scene-tag-icon">🌲</span>
+                  <span class="scene-tag-text">Gentle Scene &bull; The Glowing Door</span>
+                </div>
+                <div class="scene-controls">
+                  <button id="scene-toggle-play" class="btn-scene-ctrl" type="button" title="Pause or resume animations">
+                    <span id="play-pause-icon">⏸</span>
+                    <span id="play-pause-label">Pause</span>
+                  </button>
+                  <button id="scene-toggle-motion" class="btn-scene-ctrl" type="button" title="Toggle reduced motion accessibility mode">
+                    <span id="motion-icon">♿</span>
+                    <span id="motion-label">Reduced Motion: Off</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="scene-stage" id="scene-stage">
+                <svg class="scene-svg" viewBox="0 0 800 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A misty forest at night with a softly glowing door in an ancient tree and a friendly owl perched on a branch">
+                  <defs>
+                    <!-- Sky Gradient -->
+                    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#050814" />
+                      <stop offset="50%" stop-color="#0b1329" />
+                      <stop offset="100%" stop-color="#141c33" />
+                    </linearGradient>
+
+                    <!-- Ambient Door Glow -->
+                    <radialGradient id="doorAmbientGlow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.9" />
+                      <stop offset="35%" stop-color="#fbbf24" stop-opacity="0.6" />
+                      <stop offset="70%" stop-color="#f59e0b" stop-opacity="0.25" />
+                      <stop offset="100%" stop-color="#b45309" stop-opacity="0" />
+                    </radialGradient>
+
+                    <!-- Ground Light Pool -->
+                    <radialGradient id="groundLightPool" cx="50%" cy="30%" r="60%">
+                      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.7" />
+                      <stop offset="45%" stop-color="#f59e0b" stop-opacity="0.35" />
+                      <stop offset="100%" stop-color="#78350f" stop-opacity="0" />
+                    </radialGradient>
+
+                    <!-- Mist Gradients -->
+                    <linearGradient id="mistGrad1" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="#94a3b8" stop-opacity="0" />
+                      <stop offset="25%" stop-color="#cbd5e1" stop-opacity="0.28" />
+                      <stop offset="50%" stop-color="#e2e8f0" stop-opacity="0.4" />
+                      <stop offset="75%" stop-color="#94a3b8" stop-opacity="0.25" />
+                      <stop offset="100%" stop-color="#64748b" stop-opacity="0" />
+                    </linearGradient>
+
+                    <linearGradient id="mistGrad2" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="#64748b" stop-opacity="0" />
+                      <stop offset="30%" stop-color="#cbd5e1" stop-opacity="0.22" />
+                      <stop offset="65%" stop-color="#94a3b8" stop-opacity="0.35" />
+                      <stop offset="100%" stop-color="#94a3b8" stop-opacity="0" />
+                    </linearGradient>
+
+                    <!-- Door Interior Warmth -->
+                    <linearGradient id="doorInteriorGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#fffbeb" />
+                      <stop offset="40%" stop-color="#fef08a" />
+                      <stop offset="100%" stop-color="#f59e0b" />
+                    </linearGradient>
+
+                    <!-- Tree Trunk -->
+                    <linearGradient id="treeGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="#0f172a" />
+                      <stop offset="50%" stop-color="#192238" />
+                      <stop offset="100%" stop-color="#0b101c" />
+                    </linearGradient>
+                  </defs>
+
+                  <!-- 1. Background Sky -->
+                  <rect width="800" height="340" fill="url(#skyGrad)" />
+
+                  <!-- 2. Gentle Moon & Soft Stars -->
+                  <g class="celestial-layer">
+                    <circle cx="110" cy="65" r="26" fill="#fef9c3" opacity="0.3" class="scene-moon-glow" />
+                    <circle cx="110" cy="65" r="18" fill="#fef9c3" class="scene-moon-core" />
+                    <path d="M 115 48 A 20 20 0 0 0 126 82 A 17 17 0 1 1 115 48" fill="#fef08a" class="scene-moon" />
+                    
+                    <circle cx="210" cy="48" r="1.5" fill="#e0e7ff" class="star star-1" />
+                    <circle cx="270" cy="80" r="2" fill="#ffffff" class="star star-2" />
+                    <circle cx="340" cy="38" r="1.8" fill="#fef08a" class="star star-3" />
+                    <circle cx="430" cy="68" r="1.5" fill="#ffffff" class="star star-4" />
+                    <circle cx="680" cy="45" r="2" fill="#e0e7ff" class="star star-5" />
+                    <circle cx="750" cy="78" r="1.5" fill="#ffffff" class="star star-1" />
+                  </g>
+
+                  <!-- 3. Distant Forest Mountain & Tree Silhouettes -->
+                  <path d="M 0 240 Q 180 185 380 220 T 800 230 L 800 340 L 0 340 Z" fill="#090e1a" opacity="0.9" />
+                  <!-- Distant Pines -->
+                  <path d="M 30 240 L 45 190 L 60 240 M 55 242 L 72 175 L 88 242 M 130 238 L 148 180 L 165 238 M 220 235 L 240 170 L 260 235 M 620 238 L 638 185 L 655 238 M 710 240 L 730 175 L 750 240" stroke="#0e172a" stroke-width="4" fill="#0e172a" />
+
+                  <!-- 4. Midground Forest Layer -->
+                  <path d="M 0 265 Q 160 230 400 260 T 800 270 L 800 340 L 0 340 Z" fill="#0c1526" />
+
+                  <!-- 5. Back Mist Layer (Slow Drifting Fog) -->
+                  <g class="mist-layer mist-back-wrap">
+                    <path class="mist-shape mist-back" d="M -80 200 C 60 170, 160 230, 300 200 C 440 170, 560 230, 700 195 C 840 160, 960 220, 1050 200 L 1050 280 L -80 280 Z" fill="url(#mistGrad1)" />
+                  </g>
+
+                  <!-- 6. Ground Clearing -->
+                  <path d="M 0 285 Q 240 265 520 280 T 800 290 L 800 340 L 0 340 Z" fill="#070c17" />
+
+                  <!-- 7. Ground Light Pool (cast from glowing door) -->
+                  <ellipse cx="535" cy="318" rx="130" ry="22" fill="url(#groundLightPool)" class="door-ground-pool" />
+
+                  <!-- 8. Ancient Tree with Sprawling Branches -->
+                  <g class="ancient-tree">
+                    <!-- Tree Trunk Base and Sprawling Roots -->
+                    <path d="M 450 340 C 470 300, 480 240, 485 160 C 490 80, 510 0, 550 0 L 630 0 C 650 90, 660 180, 680 260 C 695 300, 730 330, 770 340 L 710 340 C 670 325, 650 290, 635 240 C 610 240, 560 240, 535 260 C 510 280, 490 320, 450 340 Z" fill="url(#treeGrad)" />
+                    <!-- Sprawling Left Branch (Perch for the Owl) -->
+                    <path d="M 495 160 C 460 155, 410 165, 340 162 C 300 160, 270 170, 240 178 L 245 186 C 280 180, 310 172, 350 174 C 410 176, 450 175, 490 185 Z" fill="#131c2e" />
+                    <!-- Branch Foliage Tufts -->
+                    <ellipse cx="270" cy="168" rx="22" ry="10" fill="#0b1324" opacity="0.85" />
+                    <ellipse cx="320" cy="160" rx="18" ry="8" fill="#0b1324" opacity="0.8" />
+                    <!-- High Right Branch -->
+                    <path d="M 610 90 C 660 70, 710 65, 780 75 L 778 86 C 715 78, 670 82, 620 105 Z" fill="#131c2e" />
+                  </g>
+
+                  <!-- 9. The Softly Glowing Door in the Tree -->
+                  <g class="glowing-door-group">
+                    <!-- Warm Ambient Halo around Tree Hollow -->
+                    <ellipse cx="545" cy="245" rx="95" ry="85" fill="url(#doorAmbientGlow)" class="door-glow-ambient" />
+
+                    <!-- Door Frame Carved into Tree Trunk -->
+                    <path d="M 505 305 L 505 235 A 40 40 0 0 1 585 235 L 585 305 Z" fill="#101726" stroke="#251a14" stroke-width="4" />
+
+                    <!-- Glowing Interior Warmth -->
+                    <path d="M 510 303 L 510 238 A 35 35 0 0 1 580 238 L 580 303 Z" fill="url(#doorInteriorGrad)" class="door-interior-glow" />
+
+                    <!-- Wooden Door Leaf (slightly ajar into warmth) -->
+                    <path d="M 514 300 L 514 242 A 31 31 0 0 1 568 245 L 552 298 Z" fill="#451a03" stroke="#78350f" stroke-width="2" class="door-leaf" />
+                    <!-- Warm light beam escaping from the open side -->
+                    <polygon points="552,245 580,238 580,303 552,298" fill="#fef08a" opacity="0.9" class="door-beam" />
+
+                    <!-- Round Window in the Door -->
+                    <circle cx="538" cy="265" r="7" fill="#fef08a" stroke="#78350f" stroke-width="1.5" />
+                    <!-- Window Mullions -->
+                    <line x1="531" y1="265" x2="545" y2="265" stroke="#78350f" stroke-width="1.2" />
+                    <line x1="538" y1="258" x2="538" y2="272" stroke="#78350f" stroke-width="1.2" />
+
+                    <!-- Warm Brass Door Handle -->
+                    <circle cx="548" cy="280" r="2.5" fill="#fef08a" stroke="#92400e" stroke-width="1" />
+                  </g>
+
+                  <!-- 10. Front Mist Layer (Low Drifting Fog) -->
+                  <g class="mist-layer mist-front-wrap">
+                    <path class="mist-shape mist-front" d="M -100 290 C 80 270, 180 310, 320 285 C 480 260, 580 315, 720 280 C 860 250, 960 300, 1100 285 L 1100 340 L -100 340 Z" fill="url(#mistGrad2)" />
+                  </g>
+
+                  <!-- 11. Friendly Owl Perched on Branch -->
+                  <g class="scene-owl" id="scene-owl" transform="translate(330, 118)">
+                    <g class="owl-body-group">
+                      <!-- Owl Tail Feathers -->
+                      <path d="M 12 36 L 16 52 L 20 36 Z" fill="#5c2c08" />
+
+                      <!-- Owl Body -->
+                      <ellipse cx="16" cy="26" rx="14" ry="16" fill="#854d0e" stroke="#5c2c08" stroke-width="1.2" />
+                      <!-- Cozy Breast Feathers -->
+                      <ellipse cx="16" cy="28" rx="9" ry="12" fill="#fef3c7" />
+                      <!-- Feather patterns -->
+                      <path d="M 13 22 Q 16 24 19 22 M 12 28 Q 16 30 20 28 M 13 34 Q 16 36 19 34" stroke="#d97706" stroke-width="1.2" fill="none" stroke-linecap="round" />
+
+                      <!-- Folded Wings -->
+                      <path d="M 3 18 C 1 26, 4 36, 10 40 C 7 34, 5 24, 7 18 Z" fill="#713f12" />
+                      <path d="M 29 18 C 31 26, 28 36, 22 40 C 25 34, 27 24, 25 18 Z" fill="#713f12" />
+
+                      <!-- Owl Head -->
+                      <circle cx="16" cy="11" r="11" fill="#92400e" stroke="#5c2c08" stroke-width="1" />
+                      <!-- Friendly Ear Tufts -->
+                      <polygon points="6,3 10,9 6,9" fill="#713f12" />
+                      <polygon points="26,3 22,9 26,9" fill="#713f12" />
+
+                      <!-- Facial Discs -->
+                      <circle cx="12" cy="11" r="5" fill="#fef9c3" />
+                      <circle cx="20" cy="11" r="5" fill="#fef9c3" />
+
+                      <!-- Big Gentle Round Eyes -->
+                      <circle cx="12" cy="11" r="3.2" fill="#d97706" />
+                      <circle cx="20" cy="11" r="3.2" fill="#d97706" />
+                      <circle cx="12" cy="11" r="2" fill="#1e1b4b" />
+                      <circle cx="20" cy="11" r="2" fill="#1e1b4b" />
+                      <!-- Friendly Catchlight Sparks -->
+                      <circle cx="11.2" cy="10.2" r="0.9" fill="#ffffff" />
+                      <circle cx="19.2" cy="10.2" r="0.9" fill="#ffffff" />
+
+                      <!-- Animated Eyelids (Gentle Slow Blinking) -->
+                      <g class="owl-eyelids">
+                        <rect x="7" y="6" width="10" height="7" fill="#92400e" class="owl-eyelid-left" />
+                        <rect x="15" y="6" width="10" height="7" fill="#92400e" class="owl-eyelid-right" />
+                      </g>
+
+                      <!-- Cute Golden Beak -->
+                      <polygon points="16,13 14.5,18 17.5,18" fill="#f59e0b" />
+
+                      <!-- Claws Grasping Branch -->
+                      <ellipse cx="12" cy="42" rx="3.5" ry="2" fill="#f59e0b" />
+                      <ellipse cx="20" cy="42" rx="3.5" ry="2" fill="#f59e0b" />
+                    </g>
+                  </g>
+
+                  <!-- 12. Gentle Drifting Fireflies / Forest Glows -->
+                  <g class="fireflies-layer">
+                    <circle cx="390" cy="200" r="2" fill="#fef08a" class="firefly f1" />
+                    <circle cx="480" cy="285" r="2.5" fill="#fef08a" class="firefly f2" />
+                    <circle cx="620" cy="260" r="2" fill="#fbbf24" class="firefly f3" />
+                    <circle cx="300" cy="240" r="1.8" fill="#fef08a" class="firefly f4" />
+                  </g>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Story Text -->
+            <div class="story-text" id="story-text"></div>
+            <div class="story-footer">
+              <span class="story-meta">Crafted privately on this computer using local Ollama</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sidebar: Saved Dreams on Computer -->
+      <aside class="sidebar-section">
+        <div class="card sidebar-card">
+          <div class="sidebar-header">
+            <div class="card-title-group">
+              <span class="section-icon">📖</span>
+              <h2>Saved on This Computer</h2>
+            </div>
+            <span id="dreams-count" class="badge-count">0</span>
+          </div>
+          <div class="blood-drips card-drips" aria-hidden="true">
+            <svg viewBox="0 0 320 14" preserveAspectRatio="none">
+              <path d="M0,0 L320,0 L320,2 C290,2 285,11 280,11 C275,11 270,2 220,2 C210,2 206,13 202,13 C198,13 194,2 140,2 C132,2 128,10 124,10 C120,10 116,2 60,2 C54,2 50,11 46,11 C42,11 38,2 0,2 Z" fill="#7f1d1d" />
+            </svg>
+          </div>
+
+          <p class="storage-info">
+            📁 Saved to <code>data/dreams.json</code> &bull; 100% offline &amp; private
+          </p>
+
+          <div class="search-box">
+            <input type="text" id="search-input" placeholder="Search your dreams..." />
+          </div>
+
+          <!-- Dreams List -->
+          <div id="dreams-list" class="dreams-list">
+            <!-- Dynamic items will be injected here -->
+          </div>
+
+          <div id="no-dreams-msg" class="no-dreams-msg hidden">
+            <p>No saved dreams yet.</p>
+            <p class="subtext">Type a dream and click "Save Dream" to store it here.</p>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Crooked Tombstones & Graveyard Footer -->
+    <footer class="halloween-footer" aria-label="Halloween Graveyard Decor">
+      <div class="graveyard-scene" aria-hidden="true">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="graveyard-svg">
+          <defs>
+            <linearGradient id="tombGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1e293b" />
+              <stop offset="100%" stop-color="#040207" />
+            </linearGradient>
+            <radialGradient id="jackGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fef08a" />
+              <stop offset="60%" stop-color="#f59e0b" />
+              <stop offset="100%" stop-color="#b45309" />
+            </radialGradient>
+          </defs>
+          <!-- Ground mound -->
+          <path d="M0,80 Q200,60 450,75 T900,68 Q1050,58 1200,80 L1200,120 L0,120 Z" fill="#08040a" />
+          <!-- Tombstone 1 (Crooked RIP) -->
+          <g transform="translate(140, 48) rotate(-7)">
+            <path d="M0,35 L0,10 A15,15 0 0,1 30,10 L30,35 Z" fill="url(#tombGrad)" stroke="#3f1a1a" stroke-width="1.5" />
+            <text x="7" y="24" fill="#64748b" font-size="8" font-family="serif" letter-spacing="1">RIP</text>
+          </g>
+          <!-- Tombstone 2 (Crooked Gothic Cross) -->
+          <g transform="translate(320, 32) rotate(9)">
+            <path d="M12,0 L18,0 L18,12 L30,12 L30,18 L18,18 L18,48 L12,48 L12,18 L0,18 L0,12 L12,12 Z" fill="#151b29" stroke="#3f1a1a" stroke-width="1.2" />
+          </g>
+          <!-- Dead Tree Silhouette with perching bat -->
+          <path d="M480,85 C485,60 475,40 460,20 L466,22 C478,42 490,50 495,30 L500,32 C496,55 510,40 525,25 L528,28 C515,45 505,62 505,85 Z" fill="#0d0812" />
+          <!-- Jack-o'-lantern near tombstone -->
+          <g transform="translate(680, 62)" class="ground-pumpkin">
+            <ellipse cx="18" cy="16" rx="16" ry="12" fill="#d97706" />
+            <polygon points="10,12 14,12 12,9" fill="#fef08a" class="pumpkin-glow" />
+            <polygon points="22,12 26,12 24,9" fill="#fef08a" class="pumpkin-glow" />
+            <path d="M11,18 L13,20 L16,18 L19,20 L22,18 L24,20 L21,22 L17,21 L13,22 Z" fill="#fef08a" class="pumpkin-glow" />
+            <path d="M17,4 Q20,1 21,-2" stroke="#15803d" stroke-width="2.5" fill="none" />
+          </g>
+          <!-- Tombstone 3 (Gothic Arched Obelisk) -->
+          <g transform="translate(850, 42) rotate(-5)">
+            <path d="M0,40 L0,15 Q18,0 36,15 L36,40 Z" fill="url(#tombGrad)" stroke="#3f1a1a" stroke-width="1.5" />
+            <line x1="8" y1="20" x2="28" y2="20" stroke="#475569" stroke-width="1" />
+            <line x1="18" y1="14" x2="18" y2="30" stroke="#475569" stroke-width="1" />
+          </g>
+          <!-- Tombstone 4 (Cracked Slab) -->
+          <g transform="translate(1040, 52) rotate(8)">
+            <rect x="0" y="0" width="28" height="35" rx="3" fill="url(#tombGrad)" stroke="#3f1a1a" stroke-width="1.5" />
+            <path d="M5,12 L15,18 L10,25" stroke="#ef4444" stroke-width="0.8" fill="none" />
+          </g>
+        </svg>
+      </div>
+      <div class="footer-bottom-text">
+        <span>🎃 <strong>Nightmare Journal</strong> &bull; Local &amp; Private &bull; Happy Haunting</span>
+      </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
